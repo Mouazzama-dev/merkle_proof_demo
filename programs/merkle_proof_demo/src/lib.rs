@@ -13,13 +13,12 @@ pub mod merkle_rewards {
         Ok(())
     }
 
-    pub fn claim(ctx: Context<Claim>, amount: u64, proof: Vec<[u8; 32]>) -> Result<()> {
+    pub fn claim(ctx: Context<Claim>, user_address: Pubkey, amount: u64, proof: Vec<[u8; 32]>) -> Result<()> {
         let merkle_tree = &ctx.accounts.merkle_tree;
-        let user = &ctx.accounts.user;
 
         // Verify the proof
-        let mut hash = hash_leaf(user.key.as_ref(), amount);
-        msg!("Initial hash from user key and amount: {:?}", hash);
+        let mut hash = hash_leaf(user_address.as_ref(), amount);
+        msg!("Initial hash from user address and amount: {:?}", hash);
 
         for (index, p) in proof.iter().enumerate() {
             msg!("Proof[{}]: {:?}", index, p);

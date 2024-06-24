@@ -12,7 +12,7 @@ describe('merkle_rewards', () => {
     const programId = new PublicKey("AG2tDEdvdSNvLnmdnLfAhKcfwj5d9RexzuaAhVtxEtEU");
     const program = new anchor.Program(idl, programId, provider);
 
-    const merkleRoot = Buffer.from('995c0178e224c170e7d19f761002d73c1a8bdf4ae2a31d8782b046a67557cf4d', 'hex');
+    const merkleRoot = Buffer.from('3e421d00400ce1cf199682f74d3eb353a0c4978a99b73c65a56aeeaa81b8189e', 'hex');
 
     const wallet = provider.wallet;
 
@@ -62,11 +62,15 @@ describe('merkle_rewards', () => {
         // Format the proof as an array of arrays of 32-byte buffers
         const formattedProof = proof.map(p => Array.from(p));
         const value = new anchor.BN(amount);
-        console.log(wallet.publicKey);
+
+        // Define the user address
+        const userAddress = new PublicKey('2vxsF9eTA7gYc5oE1Fnnsqj9AG1NvbpDADmDxtEZ1bQQ');
+
+        console.log(userAddress.toString());
 
         // Claim the rewards
         try {
-            await program.methods.claim(value, formattedProof)
+            await program.methods.claim(userAddress, value, formattedProof)
                 .accounts({
                     merkleTree: merkleTreePda,
                     user: wallet.publicKey,
@@ -76,6 +80,5 @@ describe('merkle_rewards', () => {
         } catch (error) {
             console.error("Error during claim:", error);
         }
-
     });
 });
